@@ -4,9 +4,17 @@
 
 Food::Food()
 {
-    food.setSize(sf::Vector2f(20.f, 20.f));
-    food.setFillColor(sf::Color::Red);
-    std::srand(static_cast<unsigned int>(std::time(nullptr))); // Initiera slumpgeneratorn
+    std::string imagePath = "img/apple.png";
+
+    if (!texture.loadFromFile(imagePath))
+    {
+        throw std::runtime_error("Failed to load food texture from: " + imagePath);
+    }
+
+    sprite.setTexture(texture);
+    sprite.setScale(0.5f, 0.5f); 
+
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
 
 void Food::spawn(const std::vector<sf::Vector2f>& occupiedPositions)
@@ -22,7 +30,17 @@ void Food::spawn(const std::vector<sf::Vector2f>& occupiedPositions)
         newPosition = sf::Vector2f(x * 20.f, y * 20.f);
     } while (isPositionOccupied(newPosition, occupiedPositions));
 
-    food.setPosition(newPosition);
+    sprite.setPosition(newPosition);
+}
+
+void Food::render(sf::RenderWindow& window) const
+{
+    window.draw(sprite);
+}
+
+sf::Vector2f Food::getPosition() const
+{
+    return sprite.getPosition();
 }
 
 bool Food::isPositionOccupied(const sf::Vector2f& position, const std::vector<sf::Vector2f>& occupiedPositions) const
@@ -37,12 +55,3 @@ bool Food::isPositionOccupied(const sf::Vector2f& position, const std::vector<sf
     return false;
 }
 
-void Food::render(sf::RenderWindow& window) const
-{
-    window.draw(food);
-}
-
-sf::Vector2f Food::getPosition() const
-{
-    return food.getPosition();
-}

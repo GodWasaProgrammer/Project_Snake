@@ -13,7 +13,10 @@ public:
     sf::Vector2f getPosition() const;
 
 private:
-    sf::RectangleShape food;
+    sf::Sprite sprite; //changed rectshape to sprite
+    sf::Texture texture; // to hold the picture
+    sf::Vector2f position;
+
     bool isPositionOccupied(const sf::Vector2f& position, const std::vector<sf::Vector2f>& occupiedPositions) const;
 };
 
