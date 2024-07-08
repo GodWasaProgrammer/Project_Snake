@@ -1,11 +1,13 @@
 #include <SFML/Graphics.hpp>
+#include "Snake.h"
 
 int main()
 {
-
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Snake Game");
 
 	window.setFramerateLimit(60);
+
+	Snake snake;
 
 	while (window.isOpen())
 	{
@@ -17,14 +19,25 @@ int main()
 				window.close();
 		}
 
+		snake.update();
+
+		// collision check
+		if (snake.checkCollision())
+		{
+			window.close();
+		}
+
 		// clear window
 		window.clear();
+		snake.render(window);
+		window.display();
 
-		// game logiq
+		// game logic
 
 
 		// window display
 		window.display();
 	}
 
+	return 0;
 }
