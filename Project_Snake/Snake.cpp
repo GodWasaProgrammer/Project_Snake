@@ -1,8 +1,8 @@
 #include "Snake.h"
 
-Snake::Snake() : direction(Right)
+Snake::Snake() : direction(Direction::Right)
 {
-    // Startposition för ormen
+    // Initial position for the snake
     body.push_back(createSegment(100.f, 100.f));
     body.push_back(createSegment(80.f, 100.f));
     body.push_back(createSegment(60.f, 100.f));
@@ -50,13 +50,13 @@ bool Snake::checkCollision()
 {
     sf::Vector2f headPosition = body[0].getPosition();
 
-    // Kontrollera kollision med väggar
+    // Kollision med väggarna
     if (headPosition.x < 0 || headPosition.x >= 800 || headPosition.y < 0 || headPosition.y >= 600)
     {
         return true;
     }
 
-    // Kontrollera kollision med kroppen
+    // Kollision med kroppen
     for (size_t i = 1; i < body.size(); ++i)
     {
         if (body[i].getPosition() == headPosition)
@@ -70,24 +70,31 @@ bool Snake::checkCollision()
 
 void Snake::updateDirection()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && direction != Down)
+    // Uppdatera statusen för varje tangent
+    keyStatus[sf::Keyboard::Up] = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+    keyStatus[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+    keyStatus[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+    keyStatus[sf::Keyboard::Right] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+
+    // Hantera riktning baserat på tangentstatus
+    if (keyStatus[sf::Keyboard::Up] && direction != Direction::Down)
     {
-        direction = Up;
+        direction = Direction::Up;
         directionVector = sf::Vector2f(0.f, -20.f);
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && direction != Up)
+    else if (keyStatus[sf::Keyboard::Down] && direction != Direction::Up)
     {
-        direction = Down;
+        direction = Direction::Down;
         directionVector = sf::Vector2f(0.f, 20.f);
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && direction != Right)
+    else if (keyStatus[sf::Keyboard::Left] && direction != Direction::Right)
     {
-        direction = Left;
+        direction = Direction::Left;
         directionVector = sf::Vector2f(-20.f, 0.f);
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && direction != Left)
+    else if (keyStatus[sf::Keyboard::Right] && direction != Direction::Left)
     {
-        direction = Right;
+        direction = Direction::Right;
         directionVector = sf::Vector2f(20.f, 0.f);
     }
 }
@@ -103,10 +110,20 @@ sf::Vector2f Snake::getBodyPosition(std::size_t index) const
     {
         return body[index].getPosition();
     }
-    return sf::Vector2f(-1.f, -1.f); // Om indexet är ogiltigt
+    return sf::Vector2f(-1.f, -1.f); // Om index är ogiltigt
 }
 
 std::size_t Snake::getSize() const
 {
     return body.size();
+}
+
+void Snake::setDirection(Direction dir)
+{
+    direction = dir;
+}
+
+Snake::Direction Snake::getDirection() const
+{
+    return direction;
 }
