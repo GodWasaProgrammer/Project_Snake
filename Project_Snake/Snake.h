@@ -13,6 +13,7 @@ public:
 	void update();
 	void render(sf::RenderWindow& window);
 	bool checkCollision();
+	sf::Vector2f getHeadPosition() const;
 
 private:
 	enum Direction { Up, Down, Left, Right };

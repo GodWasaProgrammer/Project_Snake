@@ -28,6 +28,12 @@ void Snake::move()
 	body[0].move(directionVector);
 }
 
+void Snake::grow()
+{
+	sf::Vector2f newSegmentPosition = body.back().getPosition();
+	body.push_back(createSegment(newSegmentPosition.x, newSegmentPosition.y));
+}
+
 void Snake::update()
 {
 	updateDirection();
@@ -80,4 +86,9 @@ void Snake::updateDirection()
 		direction = Right;
 		directionVector = sf::Vector2f(20.f, 0.f);
 	}
+}
+
+sf::Vector2f Snake::getHeadPosition() const
+{
+	return body[0].getPosition();
 }
