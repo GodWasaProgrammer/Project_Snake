@@ -11,6 +11,21 @@ int main()
     Snake snake;
     std::vector<Food> foods(15); // Skapa 15 matbitar
 
+    // Skapa en vektor med upptagna positioner (ormens positioner)
+    std::vector<sf::Vector2f> occupiedPositions;
+    occupiedPositions.push_back(snake.getHeadPosition());
+    for (std::size_t i = 1; i < snake.getSize(); ++i)
+    {
+        occupiedPositions.push_back(snake.getBodyPosition(i));
+    }
+
+    // Spawn matbitarna på unika positioner
+    for (auto& food : foods)
+    {
+        food.spawn(occupiedPositions);
+        occupiedPositions.push_back(food.getPosition());
+    }
+
     // Timer för att sänka ormens hastighet
     sf::Clock clock;
     sf::Time timeSinceLastMove = sf::Time::Zero;
@@ -41,7 +56,8 @@ int main()
                 if (snake.getHeadPosition() == food.getPosition())
                 {
                     snake.grow();
-                    food.spawn();
+                    food.spawn(occupiedPositions);
+                    occupiedPositions.push_back(food.getPosition());
                 }
             }
 
@@ -55,7 +71,7 @@ int main()
         snake.render(window);
 
         // Rendera alla matbitar
-        for (auto& food : foods)
+        for (auto& food : foods) // Ändrad från const auto& till auto&
         {
             food.render(window);
         }
@@ -65,3 +81,4 @@ int main()
 
     return 0;
 }
+
