@@ -1,9 +1,56 @@
 #include <SFML/Graphics.hpp>
 #include "Snake.h"
 #include "Food.h"
+#include "GameState.h"
+#include "Menu.h"
 #include <vector>
 
+void handleGame(sf::RenderWindow& window, GameState& gameState, Snake& snake, std::vector<Food>& foods, sf::Text& scoreText);
+
 int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Snake Game");
+    window.setFramerateLimit(60);
+
+    sf::Font font;
+    if (!font.loadFromFile("Fonts/Roboto-Bold.ttf"))
+    {
+        return -1;
+    }
+
+    GameState gameState = MENU;
+
+    Snake snake;
+    std::vector<Food> foods(15);
+
+    sf::Text scoreText;
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(18);
+    scoreText.setFillColor(sf::Color::Green);
+    scoreText.setPosition(0.f, 0.f);
+
+    Menu menu(font);
+
+    while (window.isOpen())
+    {
+        switch (gameState)
+        {
+        case MENU:
+            menu.handleMenu(window, gameState);
+            break;
+        case GAME:
+            handleGame(window, gameState, snake, foods, scoreText);
+            break;
+        case GAME_OVER:
+            menu.handleGameOver(window, gameState);
+            break;
+        }
+    }
+
+    return 0;
+}
+
+void handleGame(sf::RenderWindow& window, GameState& gameState, Snake& snake, std::vector<Food>& foods, sf::Text& scoreText)
 {
     // Skapa fyra ramar runt fönstret
     sf::RectangleShape topBorder(sf::Vector2f(800.f, 20.f)); // Top border
@@ -22,27 +69,6 @@ int main()
     rightBorder.setPosition(780.f, 0.f);
     rightBorder.setFillColor(sf::Color::Red);
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Snake Game");
-    window.setFramerateLimit(60);
-
-    sf::Font font;
-    if (!font.loadFromFile("Fonts/Roboto-Bold.ttf"))
-    {
-        // Hantera fel
-        return -1;
-    }
-
-    // Skapa en sf::Text för att visa poängen
-    sf::Text scoreText;
-    scoreText.setFont(font);
-    scoreText.setCharacterSize(18);
-    scoreText.setFillColor(sf::Color::Green);
-    scoreText.setPosition(0.f,0.f);
-
-    Snake snake;
-    std::vector<Food> foods(15); // Skapa 15 matbitar
-
-    // Skapa en vektor med upptagna positioner (ormens positioner)
     std::vector<sf::Vector2f> occupiedPositions;
     occupiedPositions.push_back(snake.getHeadPosition());
     for (std::size_t i = 1; i < snake.getSize(); ++i)
@@ -50,19 +76,17 @@ int main()
         occupiedPositions.push_back(snake.getBodyPosition(i));
     }
 
-    // Spawn matbitarna på unika positioner
     for (auto& food : foods)
     {
         food.spawn(occupiedPositions);
         occupiedPositions.push_back(food.getPosition());
     }
 
-    // Timer för att sänka ormens hastighet
     sf::Clock clock;
     sf::Time timeSinceLastMove = sf::Time::Zero;
-    sf::Time moveInterval = sf::seconds(0.2f); // Halvera farten genom att öka intervallet
+    sf::Time moveInterval = sf::seconds(0.2f);
 
-    while (window.isOpen())
+    while (window.isOpen() && gameState == GAME)
     {
         sf::Event event;
         while (window.pollEvent(event))
@@ -71,17 +95,14 @@ int main()
                 window.close();
         }
 
-        // Uppdatera timer
         sf::Time deltaTime = clock.restart();
         timeSinceLastMove += deltaTime;
 
-        // Flytta ormen endast om tillräckligt med tid har gått
         if (timeSinceLastMove >= moveInterval)
         {
             snake.update();
             timeSinceLastMove = sf::Time::Zero;
 
-            // Kontrollera kollision med alla matbitar
             for (auto& food : foods)
             {
                 if (snake.getHeadPosition() == food.getPosition())
@@ -95,7 +116,7 @@ int main()
 
             if (snake.checkCollision())
             {
-                window.close();
+                gameState = GAME_OVER;
             }
         }
 
@@ -104,8 +125,7 @@ int main()
         window.clear();
         snake.render(window);
 
-        // Rendera alla matbitar
-        for (auto& food : foods) // Ändrad från const auto& till auto&
+        for (auto& food : foods)
         {
             food.render(window);
         }
@@ -118,6 +138,4 @@ int main()
 
         window.display();
     }
-
-    return 0;
 }
