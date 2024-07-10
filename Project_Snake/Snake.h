@@ -17,6 +17,8 @@ public:
     void update();
     void render(sf::RenderWindow& window);
     bool checkCollision();
+    int getscore() const;
+    void increaseScore(int amount);
     sf::Vector2f getHeadPosition() const;
     sf::Vector2f getBodyPosition(std::size_t index) const;
     std::size_t getSize() const;
@@ -30,6 +32,7 @@ private:
     std::map<sf::Keyboard::Key, bool> keyStatus; // För att hålla reda på statusen för varje tangent
     sf::RectangleShape createSegment(float x, float y);
     void updateDirection();
+    int score;
 
 };
 
