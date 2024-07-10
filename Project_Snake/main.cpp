@@ -5,6 +5,23 @@
 
 int main()
 {
+    // Skapa fyra ramar runt fönstret
+    sf::RectangleShape topBorder(sf::Vector2f(800.f, 20.f)); // Top border
+    topBorder.setPosition(0.f, 0.f);
+    topBorder.setFillColor(sf::Color::Yellow);
+
+    sf::RectangleShape bottomBorder(sf::Vector2f(800.f, 20.f)); // Bottom border
+    bottomBorder.setPosition(0.f, 580.f);
+    bottomBorder.setFillColor(sf::Color::Yellow);
+
+    sf::RectangleShape leftBorder(sf::Vector2f(20.f, 600.f)); // Left border
+    leftBorder.setPosition(0.f, 0.f);
+    leftBorder.setFillColor(sf::Color::Yellow);
+
+    sf::RectangleShape rightBorder(sf::Vector2f(20.f, 600.f)); // Right border
+    rightBorder.setPosition(780.f, 0.f);
+    rightBorder.setFillColor(sf::Color::Yellow);
+
     sf::RenderWindow window(sf::VideoMode(800, 600), "Snake Game");
     window.setFramerateLimit(60);
 
@@ -75,6 +92,11 @@ int main()
         {
             food.render(window);
         }
+
+        window.draw(topBorder);
+        window.draw(bottomBorder);
+        window.draw(leftBorder);
+        window.draw(rightBorder);
 
         window.display();
     }

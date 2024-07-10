@@ -51,7 +51,7 @@ bool Snake::checkCollision()
     sf::Vector2f headPosition = body[0].getPosition();
 
     // Kollision med väggarna
-    if (headPosition.x < 0 || headPosition.x >= 800 || headPosition.y < 0 || headPosition.y >= 600)
+    if (headPosition.x < 20.f || headPosition.x >= 780.f || headPosition.y < 20.f || headPosition.y >= 580.f)
     {
         return true;
     }

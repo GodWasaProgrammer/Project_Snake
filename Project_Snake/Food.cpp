@@ -19,15 +19,19 @@ Food::Food()
 
 void Food::spawn(const std::vector<sf::Vector2f>& occupiedPositions)
 {
-    int maxX = 800 / 20;
-    int maxY = 600 / 20;
+    // Anta att varje cell i spelet är 20x20 pixlar och ramen är också 20 pixlar bred
+    int cellSize = 20;
+    int borderWidth = 20;
+
+    int maxX = (800 - 2 * borderWidth) / cellSize; // Justera för ramen
+    int maxY = (600 - 2 * borderWidth) / cellSize; // Justera för ramen
 
     sf::Vector2f newPosition;
     do
     {
         int x = std::rand() % maxX;
         int y = std::rand() % maxY;
-        newPosition = sf::Vector2f(x * 20.f, y * 20.f);
+        newPosition = sf::Vector2f((x * cellSize) + borderWidth, (y * cellSize) + borderWidth); // Justera positionen för att undvika ramen
     } while (isPositionOccupied(newPosition, occupiedPositions));
 
     sprite.setPosition(newPosition);
