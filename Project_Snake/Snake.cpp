@@ -9,6 +9,17 @@ Snake::Snake() : direction(Direction::Right)
 	directionVector = sf::Vector2f(20.f, 0.f); // Rörelsevektor
 }
 
+void Snake::reset()
+{
+	body.clear();
+	score = 0;
+	// Initial position for the snake
+	body.push_back(createSegment(100.f, 100.f));
+	body.push_back(createSegment(80.f, 100.f));
+	body.push_back(createSegment(60.f, 100.f));
+	directionVector = sf::Vector2f(20.f, 0.f); // Rörelsevektor
+}
+
 sf::RectangleShape Snake::createSegment(float x, float y)
 {
 	sf::RectangleShape segment(sf::Vector2f(20.f, 20.f));

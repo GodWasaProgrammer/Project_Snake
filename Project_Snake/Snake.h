@@ -24,6 +24,7 @@ public:
     std::size_t getSize() const;
     void setDirection(Direction dir);
     Direction getDirection() const;
+    void reset();
 
 private:
     Direction direction;
@@ -33,7 +34,6 @@ private:
     sf::RectangleShape createSegment(float x, float y);
     void updateDirection();
     int score;
-
 };
 
 #endif // SNAKE_H

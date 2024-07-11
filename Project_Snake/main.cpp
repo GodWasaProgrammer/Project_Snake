@@ -43,6 +43,7 @@ int main()
             break;
         case GAME_OVER:
             menu.handleGameOver(window, gameState);
+            snake.reset();
             break;
         }
     }
